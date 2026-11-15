@@ -1,0 +1,25 @@
+name: Deploy API to Railway
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'deploy/api-proxy/**'
+      - 'deploy-api.sh'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Railway
+        uses: railwayapp/github-action@v3
+        with:
+          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+          workspaceId: auto
+          projectId: auto
+          serviceId: auto
+          up: true
+          detach: true
