@@ -5,21 +5,22 @@ on:
     branches: [main]
     paths:
       - 'deploy/api-proxy/**'
-      - 'deploy-api.sh'
   workflow_dispatch:
+  repository_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
+      - name: Setup Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Login to Railway
+        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
+
       - name: Deploy to Railway
-        uses: railwayapp/github-action@v3
-        with:
-          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
-          workspaceId: auto
-          projectId: auto
-          serviceId: auto
-          up: true
-          detach: true
+        run: |
+          cd deploy/api-proxy
+          railway up ../../chengjifen-api-v3.zip
